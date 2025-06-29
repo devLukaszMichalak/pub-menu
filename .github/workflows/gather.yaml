@@ -12,6 +12,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up dependencies
+        run: npm ci
+
       - name: Extract the link
         run: npm run start
 
