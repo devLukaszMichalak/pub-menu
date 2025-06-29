@@ -61,7 +61,7 @@ async function downloadPdf(pdfUrl) {
 
 const pdfLink = await findPdfLink();
 if (pdfLink) {
-    const wasAppended = await appendIfNotExists('results.txt', pdfLink + '\n');
+    const wasAppended = await appendIfNotExists('pdfs/results.txt', pdfLink + '\n');
 
     if (wasAppended) {
         await downloadPdf(pdfLink);
