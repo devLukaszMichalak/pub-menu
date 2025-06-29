@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import {appendFile, readFile} from 'node:fs/promises';
+import {appendFile, readFile, writeFile} from 'node:fs/promises';
 
 async function findPdfLink() {
     const pageUrl = 'https://pub-restauracyjny.pl/';
@@ -34,12 +34,36 @@ async function appendIfNotExists(filePath, content) {
         }
     }
 
-    if (!fileData.includes(content)) {
+    if (!fileData.includes(content.trim())) {
         await appendFile(filePath, content);
+        return true;
     }
+
+    return false;
+}
+
+async function downloadPdf(pdfUrl) {
+    const response = await fetch(pdfUrl);
+    if (!response.ok) {
+        return;
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const filename = pdfUrl.split('/')
+        .filter(Boolean)
+        .slice(-3)
+        .join('_');
+
+    await writeFile(`pdfs/${filename}`, buffer);
 }
 
 const pdfLink = await findPdfLink();
 if (pdfLink) {
-    await appendIfNotExists('results.txt', pdfLink + '\n');
+    const wasAppended = await appendIfNotExists('results.txt', pdfLink + '\n');
+
+    if (wasAppended) {
+        await downloadPdf(pdfLink);
+    }
 }
