@@ -29,7 +29,9 @@ async function appendIfNotExists(filePath, content) {
     try {
         fileData = await readFile(filePath, 'utf8');
     } catch (err) {
-        if (err.code !== 'ENOENT') throw err; // Ignore if a file does not exist
+        if (err.code !== 'ENOENT') {
+            throw err;
+        }
     }
 
     if (!fileData.includes(content)) {
