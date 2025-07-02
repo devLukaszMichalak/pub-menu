@@ -2,7 +2,7 @@ name: Gather menu link
 
 on:
   schedule:
-    - cron: '0 20 * * *'
+    - cron: '17 1 * * *'
   workflow_dispatch:
 
 jobs:
@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
 
       - name: Set up dependencies
         run: npm ci

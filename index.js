@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
 import {appendFile, readFile, writeFile} from 'node:fs/promises';
+import {Buffer} from "node:buffer";
 
 async function findPdfLink() {
     const pageUrl = 'https://pub-restauracyjny.pl/';
@@ -59,11 +60,15 @@ async function downloadPdf(pdfUrl) {
     await writeFile(`pdfs/${filename}`, buffer);
 }
 
-const pdfLink = await findPdfLink();
-if (pdfLink) {
-    const wasAppended = await appendIfNotExists('pdfs/results.txt', pdfLink + '\n');
+async function main() {
+    const pdfLink = await findPdfLink();
+    if (pdfLink) {
+        const wasAppended = await appendIfNotExists('pdfs/results.txt', pdfLink + '\n');
 
-    if (wasAppended) {
-        await downloadPdf(pdfLink);
+        if (wasAppended) {
+            await downloadPdf(pdfLink);
+        }
     }
 }
+
+await main()
